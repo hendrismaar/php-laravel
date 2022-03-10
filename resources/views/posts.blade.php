@@ -1,7 +1,7 @@
 <x-layout>
     <?php foreach ($posts as $post) : ?>
         <article>
-            <a href="/posts/{{$post->slug}}">
+            <a href="/posts/{{$post->id}}">
                 {{$post->title}}
             </a>
             <div>
