@@ -24,7 +24,7 @@
 
                                 @if ($post->published_at)
                                     <span class="mt-2 block text-gray-400 text-xs">
-                                        Published <time>{{ $post->published_at->diffForHumans() }}</time> {{-- published_at--}}
+                                        Published <time>{{ $post->published_at }}</time> {{-- published_at--}}
                                     </span>
                                 @endif
                             </div>
