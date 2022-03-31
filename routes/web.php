@@ -18,41 +18,13 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::get('/', [PostController::class, "index"]
-    // $posts = Post::latest();
-
-    // if (request('search')) {
-    //     $posts
-    //         ->where('title', 'like', '%' . request('search') - '%')
-    //         ->orWhere('body', 'like', '%' . request('search') - '%');
-    // }
-    /* return view('posts', [
-        'posts' => Post::latest('published_at')->with(['category', 'author'])->get(),
-        'categories' => Category::all()
-    ]); */
-)->name('home');
-
-
+Route::get('/', [PostController::class, "index"])->name('home');
 Route::get('/posts/{post:slug}', [PostController::class, "show"])->name('post');
-
-Route::get('/categories/{category:slug}', function (Category $category) {
-    return view('posts', [
-        "posts" => $category->posts,
-        'categories' => Category::all()
-        ]);
-})->name('category');
 
 Route::get('/authors/{author:username}', function (User $author) {
     return view('posts', [
         "posts" => $author->posts,
-        'categories' => Category::all()
         ]);
-});
-
-
-
-Route::get('/hello', function () {
-    return 'hello world!';
 });
 
 Route::get('/dashboard', function () {

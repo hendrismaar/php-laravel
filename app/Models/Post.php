@@ -9,7 +9,9 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["title","body","excerpt","slug","category_id",];
+    protected $guarded = [];
+
+    protected $with = ['category', 'author'];
 
     public function category() {
         return $this->belongsTo(Category::class);
@@ -19,16 +21,25 @@ class Post extends Model
         return $this->belongsTo(User::class, "user_id");
     }
     public function scopeFilter($query, array $filters) {
-        $query->where($filters['search'] ?? false, fn($query,$search)=>
-            $query
-            ->where('title', 'like', '%' . request('search') - '%')
-            ->orWhere('excerpt', 'like', '%' . request('search') - '%')
-            ->orWhere('body', 'like', '%' . request('search') - '%')
+        $query->when($filters['search'] ?? false, fn($query,$search)=>
+            $query->where(fn($query)=>
+                $query->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$search.'%')
+                    ->orWhere('body', 'like', '%'.$search.'%')
+            )
         );
-    }
-    public function show(Post $post) {
-        return view('post', [
-            "post"=> $post
-        ]);
+
+        $query->when($filters['category'] ?? false, fn($query,$category)=>
+            $query
+                ->whereHas('category', fn ($query) =>
+                    $query->where('slug', $category)
+                )
+        );
+        $query->when($filters['author'] ?? false, fn($query,$author)=>
+            $query
+                ->whereHas('author', fn ($query) =>
+                    $query->where('slug', $author)
+                )
+        );
     }
 }
